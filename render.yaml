@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: smart-dustbin-dashboard
+    runtime: static
+    buildCommand: echo "Publishing static dashboard"
+    staticPublishPath: ./public
+
+  - type: worker
+    name: smart-dustbin-alert-monitor
+    runtime: node
+    plan: 0.5c-512mb
+    buildCommand: npm ci
+    startCommand: npm start
+    envVars:
+      - key: FIREBASE_DATABASE_URL
+        sync: false
+      - key: GMAIL_SENDER
+        sync: false
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+      - key: ALERT_RECIPIENT
+        sync: false
