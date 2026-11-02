@@ -1,0 +1,418 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Dustbin Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                🗑️
+            </div>
+
+            <div>
+                <h2>SmartBin</h2>
+                <span>IoT Monitoring</span>
+            </div>
+
+        </div>
+
+
+        <nav>
+
+            <a href="#" class="nav-item active">
+                <span>📊</span>
+                Dashboard
+            </a>
+
+            <a href="#history" class="nav-item">
+                <span>📈</span>
+                History
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="connection-small">
+
+                <span class="status-dot"></span>
+
+                System Online
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="main">
+
+
+        <!-- HEADER -->
+
+        <header class="header">
+
+            <div>
+
+                <h1>Smart Dustbin</h1>
+
+                <p>
+                    Real-time waste monitoring system
+                </p>
+
+            </div>
+
+
+            <div class="header-status">
+
+                <span class="status-dot"></span>
+
+                <span id="connectionStatus">
+                    ONLINE
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================
+             ALERT
+        ========================== -->
+
+        <div id="alertBox" class="alert-box hidden">
+
+            <div class="alert-icon">
+                ⚠️
+            </div>
+
+            <div>
+
+                <strong>
+                    Dustbin Almost Full
+                </strong>
+
+                <p>
+                    Garbage level has reached the alert threshold.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             MAIN CARDS
+        ========================== -->
+
+        <section class="cards">
+
+
+            <!-- GARBAGE LEVEL -->
+
+            <div class="card garbage-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <span class="card-label">
+                            GARBAGE LEVEL
+                        </span>
+
+                        <h2 id="garbageLevel">
+                            72%
+                        </h2>
+
+                    </div>
+
+
+                    <div class="card-icon garbage-icon">
+                        🗑️
+                    </div>
+
+                </div>
+
+
+                <div class="progress-container">
+
+                    <div
+                        id="garbageProgress"
+                        class="progress-bar garbage-progress"
+                        style="width: 72%;">
+
+                    </div>
+
+                </div>
+
+
+                <div class="card-footer">
+
+                    <span id="garbageStatus">
+                        NORMAL
+                    </span>
+
+                    <span>
+                        Alert at 90%
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- SHUTTER -->
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <span class="card-label">
+                            SHUTTER
+                        </span>
+
+                        <h2 id="shutterStatus">
+                            CLOSED
+                        </h2>
+
+                    </div>
+
+
+                    <div class="card-icon shutter-icon">
+                        🚪
+                    </div>
+
+                </div>
+
+
+                <div class="shutter-display">
+
+                    <div
+                        id="shutterIndicator"
+                        class="shutter-indicator closed">
+
+                        CLOSED
+
+                    </div>
+
+                </div>
+
+
+                <div class="card-footer">
+
+                    <span>
+                        Servo controlled
+                    </span>
+
+                    <span id="servoAngle">
+                        0°
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONNECTION -->
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <span class="card-label">
+                            CONNECTION
+                        </span>
+
+                        <h2 id="wifiStatus">
+                            ONLINE
+                        </h2>
+
+                    </div>
+
+
+                    <div class="card-icon wifi-icon">
+                        📡
+                    </div>
+
+                </div>
+
+
+                <div class="connection-display">
+
+                    <span class="big-status-dot"></span>
+
+
+                    <div>
+
+                        <strong>
+                            ESP32 Connected
+                        </strong>
+
+                        <p>
+                            Wi-Fi connection active
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card-footer">
+
+                    <span>
+                        Signal
+                    </span>
+
+                    <span>
+                        Excellent
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             GARBAGE LEVEL HISTORY
+        ========================== -->
+
+        <section
+            id="history"
+            class="dashboard-grid chart-full">
+
+
+            <div class="chart-card">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            Garbage Level History
+                        </h2>
+
+                        <p>
+                            Waste level over the last 24 hours
+                        </p>
+
+                    </div>
+
+
+                    <select id="chartPeriod">
+
+                        <option value="24">
+                            24 Hours
+                        </option>
+
+                        <option value="12">
+                            12 Hours
+                        </option>
+
+                        <option value="7">
+                            7 Readings
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="chart-container">
+
+                    <canvas id="garbageChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             FOOTER
+        ========================== -->
+
+        <footer>
+
+            <div>
+
+                🗑️
+                <strong>
+                    SmartBin
+                </strong>
+
+                — IoT Waste Management System
+
+            </div>
+
+
+            <div>
+
+                Last updated:
+
+                <strong id="footerTime">
+                    --:--:--
+                </strong>
+
+            </div>
+
+        </footer>
+
+    </main>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
+```
+
+### One small CSS change
+
+Add this **at the bottom of your existing `style.css`**:
+
+```css
+.chart-full {
+    grid-template-columns: 1fr;
+}
+```
+
+You **do not need to change `app.js`**.
+
+Your dashboard will now be:
+
+**4 status cards → full-width garbage history chart → footer**, with the System Information section completely removed.
