@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "api/alerts.js": {
+      "maxDuration": 30
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/alerts",
+      "schedule": "30 3 * * *"
+    }
+  ]
+}
