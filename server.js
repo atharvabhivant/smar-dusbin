@@ -2,8 +2,6 @@
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 
-const DB_URL = process.env.FIREBASE_DATABASE_URL.replace(/\/+$/, "");
-
 const NORMAL_INTERVAL = 10 * 60 * 1000;
 const FULL_INTERVAL = 5 * 60 * 1000;
 
@@ -20,7 +18,8 @@ let previousFull = false;
 let checking = false;
 
 async function readFirebase(path) {
-  const response = await fetch(`${DB_URL}/${path}.json`);
+  const databaseUrl = process.env.FIREBASE_DATABASE_URL.replace(/\/+$/, "");
+  const response = await fetch(`${databaseUrl}/${path}.json`);
 
   if (!response.ok) {
     throw new Error(`Firebase HTTP ${response.status}`);
@@ -87,13 +86,16 @@ async function checkAlerts() {
 }
 
 async function start() {
-  if (
-    !process.env.GMAIL_SENDER ||
-    !process.env.GMAIL_APP_PASSWORD ||
-    !process.env.ALERT_RECIPIENT ||
-    !process.env.FIREBASE_DATABASE_URL
-  ) {
-    throw new Error("Check your .env configuration.");
+  const requiredVariables = [
+    "GMAIL_SENDER",
+    "GMAIL_APP_PASSWORD",
+    "ALERT_RECIPIENT",
+    "FIREBASE_DATABASE_URL"
+  ];
+  const missingVariables = requiredVariables.filter(name => !process.env[name]);
+
+  if (missingVariables.length > 0) {
+    throw new Error(`Missing required environment variables: ${missingVariables.join(", ")}`);
   }
 
   await transporter.verify();

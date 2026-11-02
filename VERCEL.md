@@ -17,7 +17,7 @@ The cron runs daily at 03:30 UTC (09:00 India Standard Time). It emails only whe
 
 The dashboard reads Firebase directly from the browser. Configure Realtime Database rules so the dashboard can read only what it needs and unauthenticated clients cannot write data. Do not put email credentials or `CRON_SECRET` in frontend code.
 
-The existing root `server.js` is a continuously running local/standalone monitor; Vercel does not run it as a persistent process. Vercel uses the scheduled function under `api/` instead.
+The root `server.js` is a continuously running monitor and can be deployed as a Render background worker (see [RENDER.md](./RENDER.md)). Vercel does not run it as a persistent process, so the scheduled function under `api/` is used for Vercel deployments instead.
 
 ## Local checks
 
